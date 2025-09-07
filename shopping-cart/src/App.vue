@@ -1,9 +1,9 @@
 <script setup>
-import{ref} from 'vue'
+import{provide, reactive, ref} from 'vue'
 import ProductList from './components/ProductList.vue';
 import Cart from './components/Cart.vue';
 import Notification from './components/Notification.vue';
-
+ 
 
 const products = ref([
   {
@@ -48,16 +48,60 @@ const products = ref([
   },
 ])
 
+const carts = ref([
+  // {
+  //   id: 3,
+  //   name: '無線滑鼠',
+  //   description: '靜音按鍵設計，長效電池',
+  //   price: 890,
+  //   quantity:1,
+  //   image:
+  //     'https://images.unsplash.com/photo-1527814050087-3793815479db?q=80&w=1928&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  // },
+])
+
+
+const addCart=(product)=>{
+  const existProduct = carts.value.find(c=> c.id===product.id)
+  if(existProduct){
+    existProduct.quantity++
+  }else{
+    carts.value.push({
+      ...product,
+      quantity:1,
+    })
+  }
+}
+const removeCart=(item)=>{
+  carts.value= carts.value.filter(c=>c.id !==item.id)
+}
+
+
+const notificationState=reactive({
+  message:'TTT',
+  isShow:false,
+})
+
+const showNotification = (message)=>{
+  notificationState.message= message
+  notificationState.isShow= true
+setTimeout(() =>{
+  notificationState.isShow = false
+},2000)
+}
+
+provide('notificationState',notificationState)
+provide('showNotification',showNotification)
 </script>
 
 <template>
 <div id="app" class="container py-4">
   <div class="row">
     <!-- 商品列表區 -->
-    <Product-list :products="products"></Product-list>
+    <Product-list :products="products" @add-cart="addCart"></Product-list>
 
     <!-- 購物車區 -->
-    <Cart></Cart>
+    <Cart :carts="carts" @remove-cart="removeCart"></Cart>
   </div>
 
   <!-- 通知元件 -->
