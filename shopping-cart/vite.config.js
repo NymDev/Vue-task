@@ -6,7 +6,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base:'/Vue-task/',
+  base:'/Vue-task/shopping-cart/',
   plugins: [
     vue(),
     vueDevTools(),
